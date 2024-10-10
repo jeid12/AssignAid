@@ -10,4 +10,4 @@ app = FastAPI()
 app.include_router(assignment_router, prefix="/assignments", tags=["Assignments"])
 app.include_router(solution_router, prefix="/solutions", tags=["Solutions"])
 app.include_router(user_router, prefix="/users", tags=["Users"])
-app.include_router(login_router, prefix="/auth", tags=["Authentication"])  # Include login router for auth
+app.include_router(login_router, tags=["Authentication"])  # Include login router for auth

@@ -19,7 +19,7 @@ router = APIRouter()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # OAuth2PasswordBearer to get the token
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
 # Helper function to verify password
 def verify_password(plain_password: str, hashed_password: str) -> bool:
