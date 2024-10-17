@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, Form
+from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from models.Login import UserLogin
 from database import user_collection
@@ -40,6 +40,11 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+# Function to convert MongoDB document to a dictionary and handle ObjectId
+def user_to_dict(user):
+    user_dict = {k: (str(v) if isinstance(v, ObjectId) else v) for k, v in user.items()}
+    return user_dict
+
 # Login route
 @router.post("/login")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
@@ -77,11 +82,9 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     user = await user_collection.find_one({"username": username})
     if user is None:
         raise credentials_exception
-    return user
+    return user_to_dict(user)  # Convert the user object to dict
 
 # Protected route example
 @router.get("/me")
 async def read_users_me(current_user: dict = Depends(get_current_user)):
-    return current_user
-
-# Optional: You can add role-based access control in other routes by checking current_user['role']
+    return current_user  # The user is already converted to dict in get_current_user
